@@ -5,35 +5,18 @@ import { GITHUB_API_SERVER } from "../oauthInfo/oauth";
 
 const Profile = () => {
   const location = useLocation();
-  const [userName, setUserName] = useState();
+  const [userId, setUserId] = useState();
 
   useEffect(() => {
-    const fetchGithubUser = () => {
-      const accessToken = location.state;
-
-      return fetch(GITHUB_API_SERVER, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Accept: "application/json",
-        },
-      });
+    const updateUserInfo = () => {
+      const accessToken = location.accessToken;
+      setUserId(location.userId);
     };
 
-    fetchGithubUser()
-      .then((response) => {
-        console.log("login res:", response);
+    return updateUserInfo();
+  }, []);
 
-        console.log("login res:", response.text);
-
-        console.log("login res:", response.json);
-        return response.json();
-      })
-      .then(({ login }) => setUserName(login))
-      .catch((err) => console.log(err));
-  });
-
-  return <div>로그인 된 사용자 : {userName ?? "로딩중.."}</div>;
+  return <div>로그인 된 사용자 : {userId ?? "로딩중.."}</div>;
 };
 
 export default Profile;

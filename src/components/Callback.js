@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   CLIENT_ID,
@@ -8,14 +8,20 @@ import {
 import { useNavigate } from "react-router-dom";
 const Callback = () => {
   const navigate = useNavigate();
+  const [isCalled, setIsCalled] = useState(false);
 
   useEffect(() => {
     const fetchAccessToken = () => {
+      if (isCalled === true) {
+        return;
+      }
+
+      setIsCalled(true);
       const location = new URL(window.location.href);
       const code = location.searchParams.get("code");
-      const ACCESS_TOKEN_URL = `${GITHUB_AUTH_TOKEN_SERVER}?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRETS}&code=${code}`;
+      const TRY_LOGIN_URI = `http://localhost:8080/account/github/handleLogin?code=${code}`;
 
-      return fetch(ACCESS_TOKEN_URL, {
+      return fetch(TRY_LOGIN_URI, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,10 +33,14 @@ const Callback = () => {
     fetchAccessToken()
       .then((response) => response.json())
       .then((data) => {
-        navigate("/profile", { state: data.access_token });
+        if (data.userId == null) throw "예외 : 아이디 없음";
+        navigate("/profile", {
+          accessToken: data.accessToken,
+          userId: data.userId,
+        });
       })
       .catch((err) => console.log(err));
-  });
+  }, []);
 
   return <div>로딩중 ...</div>;
 };
