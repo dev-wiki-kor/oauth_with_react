@@ -33,10 +33,12 @@ const Callback = () => {
     fetchAccessToken()
       .then((response) => response.json())
       .then((data) => {
-        if (data.userId == null) throw "예외 : 아이디 없음";
+        if (data.uniqueGithubId == null) throw "예외 : 아이디 없음";
         navigate("/profile", {
-          accessToken: data.accessToken,
-          userId: data.userId,
+          state: {
+            accessToken: data.accessToken,
+            userId: data.uniqueGithubId,
+          },
         });
       })
       .catch((err) => console.log(err));

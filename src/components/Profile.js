@@ -7,10 +7,11 @@ const Profile = () => {
   const location = useLocation();
   const [userId, setUserId] = useState();
 
+
   useEffect(() => {
     const updateUserInfo = () => {
-      const accessToken = location.accessToken;
-      setUserId(location.userId);
+      const accessToken = location.state.accessToken;
+      setUserId(location.state.userId);
     };
 
     return updateUserInfo();
